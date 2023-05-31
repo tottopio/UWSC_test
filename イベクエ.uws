@@ -1,0 +1,338 @@
+winid = getid("topio")  //ゲームウィンドウを名前で検索して取得
+    print "ウィンドウIDを取得しました。"
+    print "ID.NOは"　+ winid
+    winPosX = STATUS(winid,ST_X)
+    winPosY = STATUS(winid,ST_Y)
+    winsizeX = STATUS(winid,ST_WIDTH)
+    winsizeY = STATUS(winid,ST_HEIGHT)
+
+//取得した座標の確認
+print "位置X 位置Y 幅 高さ"
+print winPosX + "   " + winPosY + "   " + winsizeX + "   " + winsizeY
+
+//androidの画面のサイズを設定。(個人の端末による)
+adbsizeX = 360
+adbsizeY = 640
+
+//ウィンドウサイズとandroid画面サイズの差からNOXのフレームサイズを割り出す。
+windowflamesize = winsizeY - adbsizeY
+print "ウィンドウサイズは" + " " + windowflamesize
+
+MOUSEORG(winid,MORG_DIRECT,MORG_FORE)       //MOUSEORGの設定
+
+//chkimgx関数用のuwsをインクルード
+CALL ChkImgX.uws
+
+//CHKIMGXに関する設定項目 ゲームに応じて一括で変更するため最初にまとめて設定
+x1  = 0               // 検出範囲の左上X座標
+y1  = 0               // 検出範囲の左上Y座標
+x2  = 360             // 検出範囲の右下X座標 G_SCREEN_Wは特殊関数で画面の横幅
+y2  = 640             // 検出範囲の右下Y座標 G_SCREEN_Hは特殊関数で画面の縦幅
+Detect_num = 1        // 何個目に検出した場所を対象にするか
+Threshold_delta  = 5  // 発見する画像と誤差 n% の指定
+Target_color = -1     // 色相を指定して検出できるが、フルカラー判定なら-1を指定
+
+startup_chkimgx() //CHKIMGX関数開始
+
+count=0
+
+
+While True                       //Wendまでの処理を繰り返す
+
+print "周回数" +count
+
+//" "内に指定した画像を認識したら処理開始(曖昧認識)
+ifb CHKIMGX("img/quest.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color)         
+    	print "questを発見しました。"       //画像を発見したらログに表示
+	
+    	//検索した座標を別の変数に代入しておく
+    	attack_x=g_imgx_x
+    	attack_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (attack_x) + " " + (attack_y)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+
+elseif CHKIMGX("img/ibento.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "ibentoを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	ibento_x=g_imgx_x
+    	ibento_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (ibento_x) + " " + (ibento_y)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+elseif CHKIMGX("img/ibeque.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "イベントクエストを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	ibeque_x=g_imgx_x
+    	ibeque_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (32) + " " + (283)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+elseif CHKIMGX("img/hyper.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "究極を発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	hyper_x=g_imgx_x
+    	hyper_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (hyper_x) + " " + (hyper_y)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+
+elseif CHKIMGX("img/hyper.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "究極を発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	hyper_x=g_imgx_x
+    	hyper_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (hyper_x) + " " + (hyper_y)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+
+elseif CHKIMGX("img/solo.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "ソロを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	solo_x=g_imgx_x
+    	solo_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (solo_x) + " " + (solo_y)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+elseif CHKIMGX("img/fre.bmp", winid, x1, y1, x2, y2, Detect_num, 10, Target_color) 
+    	print "フレンドを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	//fre_x=g_imgx_x
+    	//fre_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (79) + " " + (360)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+elseif CHKIMGX("img/takara.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "お宝を発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	takara_x=g_imgx_x
+    	takara_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (takara_x) + " " + (470) + " " + (takara_x) + " " + (470) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	
+	CHKIMGX("img/go.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "出撃を発見しました。"       //画像を発見したらログに表示
+	go_x=g_imgx_x
+    	go_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input touchscreen tap " + (go_x) + " " + (go_y)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+
+
+elseif CHKIMGX("img/stage.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+	print "ステージを発見しました。"       //画像を発見したらログに表示
+
+	R = 0
+	R = RANDOM(4)
+	
+	print "乱数" +R
+	
+	ifb CHKIMGX("img/ss.bmp", winid, x1, y1, x2, y2, Detect_num, 20, Target_color) 
+    	print "ssを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	ss_x=g_imgx_x
+    	ss_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (ss_x+10) + " " + (ss_y+10) + " " + (ss_x+10) + " " + (ss_y+10) + " " + (50)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	endif
+
+	ifb CHKIMGX("img/ss2.bmp", winid, x1, y1, x2, y2, Detect_num, 20, Target_color) 
+    	print "ssを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	ss2_x=g_imgx_x
+    	ss2_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (ss2_x+10) + " " + (ss2_y+10) + " " + (ss2_x+10) + " " + (ss2_y+10) + " " + (50)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+	endif 
+
+	IFB R = 0
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (200) + " " + (200) + " " + (10) + " " + (10) + " " + (480)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	
+	ELSEIF R = 1
+	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (180) + " " + (200) + " " + (10) + " " + (175) + " " + (500)
+	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+	ELSEIF R = 2
+	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (160) + " " + (200) + " " + (10) + " " + (10) + " " + (500)
+	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+	ELSEIF R = 3
+	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (20) + " " + (200) + " " + (200) + " " + (20) + " " + (500)
+	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	
+	endif
+	
+	ifb CHKIMGX("img/no.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "コンティニューを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	no_x=g_imgx_x
+    	no_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (no_x) + " " + (no_y) + " " + (no_x) + " " + (no_y) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	count=count+1
+	endif
+
+	ifb CHKIMGX("img/yes.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "諦めるを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	yes_x=g_imgx_x
+    	yes_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (yes_x) + " " + (yes_y) + " " + (yes_x) + " " + (yes_y) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	count=count+1
+	endif
+
+
+	ifb CHKIMGX("img/crear.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "クリアを発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	crear_x=g_imgx_x
+    	crear_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (crear_x) + " " + (crear_y) + " " + (crear_x) + " " + (crear_y) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	count=count+1
+	endif
+
+
+elseif CHKIMGX("img/result1.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "スペシャル報酬を発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	result1_x=g_imgx_x
+    	result1_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (result1_x) + " " + (result1_y) + " " + (result1_x) + " " + (result1_y) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+	ifb CHKIMGX("img/result2.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "クリア報酬を発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	result2_x=g_imgx_x
+    	result2_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (result2_x) + " " + (result2_y) + " " + (result2_x) + " " + (result2_y) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+	endif
+
+elseif CHKIMGX("img/get.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "スペシャル報酬を発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	get_x=g_imgx_x
+    	get_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (get_x) + " " + (get_y) + " " + (get_x) + " " + (get_y) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+elseif CHKIMGX("img/result3.bmp", winid, x1, y1, x2, y2, Detect_num, Threshold_delta, Target_color) 
+    	print "魂気報酬を発見しました。"       //画像を発見したらログに表示
+
+    	//検索した座標を別の変数に代入しておく
+    	result3_x=g_imgx_x
+    	result3_y=g_imgx_y-windowflamesize //ウィンドウの枠の分座標がズレるので補正
+
+    	//画像認識で取得した値を代入してDOSCMDで送る内容を作成
+    	CMD = "cd /d D:\Program Files (x86)\nox\Nox\bin & nox_adb shell input swipe " + (result3_x) + " " + (result3_y) + " " + (result3_x) + " " + (result3_y) + " " + (250)
+    	print CMD                        //CMDの内容を確認
+    	DOSCMD(CMD)                      //Noxに操作を送信
+    	sleep(1)                         //操作送信後1秒待機
+
+
+
+
+
+else                                 //上記の条件全てに当てはまらなかった場合
+    print "画像が見つかりません"        //メッセージを出す。
+endif
+
+sleep(1.0)
+WEND
+
